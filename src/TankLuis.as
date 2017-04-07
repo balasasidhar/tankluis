@@ -5,13 +5,29 @@ package
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	
 	public class TankLuis extends Sprite
 	{
-		private var loaderStaticBg6:Loader = new Loader();
+		private var regTankURL: String = "../res/reg_tank.png";
+		private var clrTankURL: String = "../res/clr_reg_tank.png";
 		
+		private var regPipeURL: String = "../res/lv_pipe_reg.png";
+		private var clrPipeURL: String = "../res/lv_pipe_clr.png";
+		
+		private var pricePerTank: int = 80;
+		private var pricePerPipe: int = 10;
+		private var totalPrice: int = 0;
+		
+		private var textSoFarSpentValue:TextField = new TextField();
+		
+		private var procssedTanks: Array = new Array();
+		private var procssedPipes: Array = new Array();
+		
+		private var loaderStaticBg6:Loader = new Loader();
+			
 		/** First Row Start **/
 		
 		// tanks
@@ -48,6 +64,7 @@ package
 		// pipes
 		private var loaderRegPipe10: Loader = new Loader();
 		private var loaderRegPipe11: Loader = new Loader();
+		private var loaderRegPipe11_1: Loader = new Loader();
 		private var loaderRegPipe12: Loader = new Loader();
 		private var loaderRegPipe13: Loader = new Loader();
 		private var loaderRegPipe14: Loader = new Loader();
@@ -75,9 +92,15 @@ package
 		private var loaderRegPipe20_1: Loader = new Loader();
 		private var loaderRegPipe20_2: Loader = new Loader();
 		private var loaderRegPipe21: Loader = new Loader();
+		private var loaderRegPipe21_1: Loader = new Loader();
+		private var loaderRegPipe21_2: Loader = new Loader();
 		private var loaderRegPipe22: Loader = new Loader();
+		private var loaderRegPipe22_1: Loader = new Loader();
 		private var loaderRegPipe23: Loader = new Loader();
+		private var loaderRegPipe23_1: Loader = new Loader();
+		private var loaderRegPipe23_2: Loader = new Loader();
 		private var loaderRegPipe24: Loader = new Loader();
+		private var loaderRegPipe24_1: Loader = new Loader();
 		
 		// pipe out
 		private var loaderOutPipeClr20: Loader = new Loader();
@@ -96,10 +119,15 @@ package
 		
 		// pipes
 		private var loaderRegPipe30: Loader = new Loader();
+		private var loaderRegPipe30_1: Loader = new Loader();
 		private var loaderRegPipe31: Loader = new Loader();
+		private var loaderRegPipe31_1: Loader = new Loader();
 		private var loaderRegPipe32: Loader = new Loader();
 		private var loaderRegPipe33: Loader = new Loader();
+		private var loaderRegPipe33_1: Loader = new Loader();
+		private var loaderRegPipe33_2: Loader = new Loader();
 		private var loaderRegPipe34: Loader = new Loader();
+		private var loaderRegPipe34_1: Loader = new Loader();
 		
 		// pipe out
 		private var loaderOutPipeClr30: Loader = new Loader();
@@ -117,11 +145,15 @@ package
 		private var loaderRegTank45: Loader = new Loader();
 		
 		// pipes
-		private var loaderRegPipe40: Loader = new Loader();
+		private var loaderRegPipe40: Loader = new Loader();		
 		private var loaderRegPipe41: Loader = new Loader();
 		private var loaderRegPipe42: Loader = new Loader();
+		private var loaderRegPipe42_1: Loader = new Loader();
 		private var loaderRegPipe43: Loader = new Loader();
+		private var loaderRegPipe43_1: Loader = new Loader();
+		private var loaderRegPipe43_2: Loader = new Loader();
 		private var loaderRegPipe44: Loader = new Loader();
+		private var loaderRegPipe44_1: Loader = new Loader();
 		
 		// pipe out
 		private var loaderOutPipeClr40: Loader = new Loader();
@@ -140,10 +172,15 @@ package
 		
 		// pipes
 		private var loaderRegPipe50: Loader = new Loader();
+		private var loaderRegPipe50_1: Loader = new Loader();
 		private var loaderRegPipe51: Loader = new Loader();
+		private var loaderRegPipe51_1: Loader = new Loader();
 		private var loaderRegPipe52: Loader = new Loader();
+		private var loaderRegPipe52_1: Loader = new Loader();
 		private var loaderRegPipe53: Loader = new Loader();
+		private var loaderRegPipe53_1: Loader = new Loader();
 		private var loaderRegPipe54: Loader = new Loader();
+		private var loaderRegPipe54_1: Loader = new Loader();
 		
 		// pipe out
 		private var loaderOutPipeClr50: Loader = new Loader();
@@ -168,13 +205,13 @@ package
 			textTitle.width = 180;
 			
 			var textInnerWall:TextField = new TextField();
-			textInnerWall.text = "Check Inner Walls of a Tank: $80";
+			textInnerWall.text = "Check Inner Walls of a Tank: $"+pricePerTank;
 			textInnerWall.x = 15;
 			textInnerWall.y = 30;
 			textInnerWall.width = 180;
 			
 			var textPipeWater:TextField = new TextField();
-			textPipeWater.text = "Test Pipe Water: $10";
+			textPipeWater.text = "Test Pipe Water: $"+pricePerPipe;
 			textPipeWater.x = 15;
 			textPipeWater.y = 45;
 			textPipeWater.width = 180;
@@ -207,8 +244,8 @@ package
 			textSoFarSpentLabel.y = 15;
 			textSoFarSpentLabel.width = 125;
 			
-			var textSoFarSpentValue:TextField = new TextField();
-			textSoFarSpentValue.text = "$0";
+			
+			textSoFarSpentValue.text = "$"+totalPrice;
 			textSoFarSpentValue.x = 205;
 			textSoFarSpentValue.y = 30;
 			textSoFarSpentValue.width = 125;
@@ -266,6 +303,7 @@ package
 				loaderRegTank00.height = 20;
 			});
 			
+			
 			loaderRegTank01.x = 115;
 			loaderRegTank01.y = 163;
 			
@@ -306,8 +344,8 @@ package
 				loaderRegTank05.height = 20;
 			});
 			
-			loaderRegPipe00.x = 86;
-			loaderRegPipe00.y = 168;
+			loaderRegPipe00.x = 84;
+			loaderRegPipe00.y = 170;
 			
 			loaderRegPipe00.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
 				loaderRegPipe00.width = 48;
@@ -365,37 +403,51 @@ package
 				loaderOutPipeClr00.height = 9;
 			});
 				
-			loaderRegTank00.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank01.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank02.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank03.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank04.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank05.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegTank00.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank01.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank02.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank03.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank04.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank05.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
 			
-			loaderRegPipe00.load(new URLRequest("../res/pipe_reg.png"));
-			loaderRegPipe01.load(new URLRequest("../res/pipe_reg.png"));
-			loaderRegPipe01_1.load(new URLRequest("../res/pipe_reg.png"));
-			loaderRegPipe02.load(new URLRequest("../res/pipe_reg.png"));
-			loaderRegPipe03.load(new URLRequest("../res/pipe_reg.png"));
-			loaderRegPipe04.load(new URLRequest("../res/pipe_reg.png"));
+			loaderRegPipe00.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe01.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe01_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe02.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe03.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe04.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank00.load(new URLRequest(regTankURL));
+			loaderRegTank01.load(new URLRequest(regTankURL));
+			loaderRegTank02.load(new URLRequest(regTankURL));
+			loaderRegTank03.load(new URLRequest(regTankURL));
+			loaderRegTank04.load(new URLRequest(regTankURL));
+			loaderRegTank05.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe00.load(new URLRequest(regPipeURL));
+			loaderRegPipe01.load(new URLRequest(regPipeURL));
+			loaderRegPipe01_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe02.load(new URLRequest(regPipeURL));
+			loaderRegPipe03.load(new URLRequest(regPipeURL));
+			loaderRegPipe04.load(new URLRequest(regPipeURL));
 			
 			loaderOutPipeClr00.load(new URLRequest("../res/out_pipe_clr.png"));
 			
-			addChildAt(loaderRegTank00, 1);
-			addChildAt(loaderRegTank01, 1);
-			addChildAt(loaderRegTank02, 1);
-			addChildAt(loaderRegTank03, 1);
-			addChildAt(loaderRegTank04, 1);
-			addChildAt(loaderRegTank05, 1);
+			addChild(loaderRegTank00);
+			addChild(loaderRegTank01);
+			addChild(loaderRegTank02);
+			addChild(loaderRegTank03);
+			addChild(loaderRegTank04);
+			addChild(loaderRegTank05);
 			
-			addChildAt(loaderRegPipe00, 0);
-			addChildAt(loaderRegPipe01, 0);
-			addChildAt(loaderRegPipe01_1, 0);
-			addChildAt(loaderRegPipe02, 0);
-			addChildAt(loaderRegPipe03, 0);
-			addChildAt(loaderRegPipe04, 0);
+			addChild(loaderRegPipe00);
+			addChild(loaderRegPipe01);
+			addChild(loaderRegPipe01_1);
+			addChild(loaderRegPipe02);
+			addChild(loaderRegPipe03);
+			addChild(loaderRegPipe04);
 			
-			addChildAt(loaderOutPipeClr00, 0);
+			addChild(loaderOutPipeClr00);
 			
 			/** row one end **/
 			
@@ -465,6 +517,15 @@ package
 				loaderRegPipe12.height = 10;
 			});
 			
+			loaderRegPipe11_1.x = 137;
+			loaderRegPipe11_1.y = 204;
+			
+			loaderRegPipe11_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe11_1.width = 48;
+				loaderRegPipe11_1.height = 10;
+				loaderRegPipe11_1.rotation = 45;
+			});
+			
 			loaderRegPipe12_1.x = 180;
 			loaderRegPipe12_1.y = 204;
 			
@@ -508,37 +569,54 @@ package
 				loaderOutPipeClr10.height = 8;
 			});
 			
-			loaderRegTank10.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank11.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank12.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank13.load(new URLRequest("../res/clr_tank.png"));
-			loaderRegTank14.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank15.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegTank10.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank11.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank12.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank13.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank14.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank15.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
 			
-			loaderRegPipe10.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe12.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe14.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe12_1.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe13_1.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe14_1.load(new URLRequest("../res/pipe_reg.png"))
+			loaderRegPipe10.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe11_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe12.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe14.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe12_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe13_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe14_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank10.load(new URLRequest(regTankURL));
+			loaderRegTank11.load(new URLRequest(regTankURL));
+			loaderRegTank12.load(new URLRequest(regTankURL));
+			loaderRegTank13.load(new URLRequest(regTankURL));
+			loaderRegTank14.load(new URLRequest(regTankURL));
+			loaderRegTank15.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe10.load(new URLRequest(regPipeURL))
+			loaderRegPipe11_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe12.load(new URLRequest(regPipeURL))
+			loaderRegPipe14.load(new URLRequest(regPipeURL))
+			loaderRegPipe12_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe13_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe14_1.load(new URLRequest(regPipeURL))
 			
 			loaderOutPipeClr10.load(new URLRequest("../res/out_pipe_clr.png"))
 				
-			addChildAt(loaderRegTank10, 2);
-			addChildAt(loaderRegTank11, 2);
-			addChildAt(loaderRegTank12, 2);
-			addChildAt(loaderRegTank13, 2);
-			addChildAt(loaderRegTank14, 2);
-			addChildAt(loaderRegTank15, 2);
+			addChild(loaderRegTank10);
+			addChild(loaderRegTank11);
+			addChild(loaderRegTank12);
+			addChild(loaderRegTank13);
+			addChild(loaderRegTank14);
+			addChild(loaderRegTank15);
 			
-			addChildAt(loaderRegPipe10, 1);
-			addChildAt(loaderRegPipe12, 1);
-			addChildAt(loaderRegPipe14, 1);
-			addChildAt(loaderRegPipe12_1, 1);
-			addChildAt(loaderRegPipe13_1, 1);
-			addChildAt(loaderRegPipe14_1, 1);
+			addChild(loaderRegPipe10);
+			addChild(loaderRegPipe12);
+			addChild(loaderRegPipe14);
+			addChild(loaderRegPipe11_1);
+			addChild(loaderRegPipe12_1);
+			addChild(loaderRegPipe13_1);
+			addChild(loaderRegPipe14_1);
 			
-			addChildAt(loaderOutPipeClr10, 1);
+			addChild(loaderOutPipeClr10);
 			
 			/** row two end **/
 			
@@ -599,11 +677,11 @@ package
 				loaderRegPipe20.height = 10;
 			});
 			
-			loaderRegPipe22.x = 185;
+			loaderRegPipe22.x = 184;
 			loaderRegPipe22.y = 237;
 			
 			loaderRegPipe22.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
-				loaderRegPipe22.width = 30;
+				loaderRegPipe22.width = 32;
 				loaderRegPipe22.height = 10;
 			});
 			
@@ -624,16 +702,115 @@ package
 				loaderOutPipeClr20.height = 8;
 			});
 			
-			loaderRegTank20.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank21.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank22.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank23.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank24.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank25.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegPipe20_1.x = 80;
+			loaderRegPipe20_1.y = 237;
 			
-			loaderRegPipe20.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe22.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe24.load(new URLRequest("../res/pipe_reg.png"))
+			loaderRegPipe20_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe20_1.width = 50;
+				loaderRegPipe20_1.height = 10;
+				loaderRegPipe20_1.rotation = -45;
+			});
+			
+			loaderRegPipe20_2.x = 83;
+			loaderRegPipe20_2.y = 236;
+			
+			loaderRegPipe20_2.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe20_2.width = 50;
+				loaderRegPipe20_2.height = 10;
+				loaderRegPipe20_2.rotation = 45;
+			});
+			
+			loaderRegPipe21_1.x = 130;
+			loaderRegPipe21_1.y = 237;
+			
+			loaderRegPipe21_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe21_1.width = 50;
+				loaderRegPipe21_1.height = 10;
+				loaderRegPipe21_1.rotation = -45;
+			});
+			
+			loaderRegPipe21_2.x = 134;
+			loaderRegPipe21_2.y = 237;
+			
+			loaderRegPipe21_2.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe21_2.width = 50;
+				loaderRegPipe21_2.height = 10;
+				loaderRegPipe21_2.rotation = 45;
+			});
+			
+			loaderRegPipe22_1.x = 185;
+			loaderRegPipe22_1.y = 237;
+			
+			loaderRegPipe22_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe22_1.width = 50;
+				loaderRegPipe22_1.height = 10;
+				loaderRegPipe22_1.rotation = 45;
+			});
+			
+			loaderRegPipe23_1.x = 230;
+			loaderRegPipe23_1.y = 237;
+			
+			loaderRegPipe23_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe23_1.width = 50;
+				loaderRegPipe23_1.height = 10;
+				loaderRegPipe23_1.rotation = -45;
+			});
+			
+			loaderRegPipe23_2.x = 235;
+			loaderRegPipe23_2.y = 237;
+			
+			loaderRegPipe23_2.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe23_2.width = 50;
+				loaderRegPipe23_2.height = 10;
+				loaderRegPipe23_2.rotation = 45;
+			});
+			
+			loaderRegPipe24_1.x = 285;
+			loaderRegPipe24_1.y = 237;
+			
+			loaderRegPipe24_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe24_1.width = 50;
+				loaderRegPipe24_1.height = 10;
+				loaderRegPipe24_1.rotation = 45;
+			});
+			
+			loaderRegTank20.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank21.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank22.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank23.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank24.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank25.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			
+			loaderRegPipe20.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe20_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe20_2.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe21_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe21_2.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe22.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe22_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe23_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe23_2.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe24.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe24_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank20.load(new URLRequest(regTankURL));
+			loaderRegTank21.load(new URLRequest(regTankURL));
+			loaderRegTank22.load(new URLRequest(regTankURL));
+			loaderRegTank23.load(new URLRequest(regTankURL));
+			loaderRegTank24.load(new URLRequest(regTankURL));
+			loaderRegTank25.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe20.load(new URLRequest(regPipeURL))
+			loaderRegPipe20_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe20_2.load(new URLRequest(regPipeURL))
+			loaderRegPipe21_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe21_2.load(new URLRequest(regPipeURL))
+			loaderRegPipe22.load(new URLRequest(regPipeURL))
+			loaderRegPipe22_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe23_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe23_2.load(new URLRequest(regPipeURL))
+			loaderRegPipe24.load(new URLRequest(regPipeURL))
+			loaderRegPipe24_1.load(new URLRequest(regPipeURL))
 				
 			loaderOutPipeClr20.load(new URLRequest("../res/out_pipe_clr.png"))
 			
@@ -645,8 +822,16 @@ package
 			addChild(loaderRegTank25);
 			
 			addChild(loaderRegPipe20);
+			addChild(loaderRegPipe20_1);
+			addChild(loaderRegPipe20_2);
+			addChild(loaderRegPipe21_1);
+			addChild(loaderRegPipe21_2);
 			addChild(loaderRegPipe22);
+			addChild(loaderRegPipe22_1);
+			addChild(loaderRegPipe23_1);
+			addChild(loaderRegPipe23_2);
 			addChild(loaderRegPipe24);
+			addChild(loaderRegPipe24_1);
 			
 			addChild(loaderOutPipeClr20);
 			
@@ -742,19 +927,89 @@ package
 				loaderOutPipeClr30.height = 9;
 			});
 			
-			loaderRegTank30.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank31.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank32.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank33.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank34.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank35.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegPipe30_1.x = 83;
+			loaderRegPipe30_1.y = 271;
 			
-			loaderRegPipe30.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe31.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe32.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe33.load(new URLRequest("../res/pipe_reg.png"))
+			loaderRegPipe30_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe30_1.width = 50;
+				loaderRegPipe30_1.height = 10;
+				loaderRegPipe30_1.rotation = 45;
+			});
+			
+			
+			loaderRegPipe31_1.x = 134;
+			loaderRegPipe31_1.y = 271;
+			
+			loaderRegPipe31_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe31_1.width = 50;
+				loaderRegPipe31_1.height = 10;
+				loaderRegPipe31_1.rotation = 45;
+			});
+			
+			
+			loaderRegPipe33_1.x = 230;
+			loaderRegPipe33_1.y = 271;
+			
+			loaderRegPipe33_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe33_1.width = 50;
+				loaderRegPipe33_1.height = 10;
+				loaderRegPipe33_1.rotation = -45;
+			});
+			
+			loaderRegPipe33_2.x = 235;
+			loaderRegPipe33_2.y = 271;
+			
+			loaderRegPipe33_2.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe33_2.width = 50;
+				loaderRegPipe33_2.height = 10;
+				loaderRegPipe33_2.rotation = 45;
+			});
+			
+			loaderRegPipe34_1.x = 285;
+			loaderRegPipe34_1.y = 271;
+			
+			loaderRegPipe34_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe34_1.width = 50;
+				loaderRegPipe34_1.height = 10;
+				loaderRegPipe34_1.rotation = 45;
+			});
+			
+			loaderRegTank30.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank31.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank32.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank33.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank34.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank35.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			
+			loaderRegPipe30.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe30_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe31.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe31_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe32.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe33.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe33_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe33_2.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe34_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank30.load(new URLRequest(regTankURL));
+			loaderRegTank31.load(new URLRequest(regTankURL));
+			loaderRegTank32.load(new URLRequest(regTankURL));
+			loaderRegTank33.load(new URLRequest(regTankURL));
+			loaderRegTank34.load(new URLRequest(regTankURL));
+			loaderRegTank35.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe30.load(new URLRequest(regPipeURL));
+			loaderRegPipe30_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe31.load(new URLRequest(regPipeURL));
+			loaderRegPipe31_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe32.load(new URLRequest(regPipeURL));
+			loaderRegPipe33.load(new URLRequest(regPipeURL));
+			loaderRegPipe33_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe33_2.load(new URLRequest(regPipeURL));
+			loaderRegPipe34_1.load(new URLRequest(regPipeURL));
 				
 			loaderOutPipeClr30.load(new URLRequest("../res/out_pipe_clr.png"))
+				
 			addChild(loaderRegTank30);
 			addChild(loaderRegTank31);
 			addChild(loaderRegTank32);
@@ -763,9 +1018,14 @@ package
 			addChild(loaderRegTank35);
 			
 			addChild(loaderRegPipe30);
+			addChild(loaderRegPipe30_1);
 			addChild(loaderRegPipe31);
+			addChild(loaderRegPipe31_1);
 			addChild(loaderRegPipe32);
 			addChild(loaderRegPipe33);
+			addChild(loaderRegPipe33_1);
+			addChild(loaderRegPipe33_2);
+			addChild(loaderRegPipe34_1);
 			
 			addChild(loaderOutPipeClr30);
 			
@@ -861,7 +1121,6 @@ package
 				loaderRegPipe44.height = 10;
 			});
 			
-			
 			loaderOutPipeClr40.x = 335
 			loaderOutPipeClr40.y = 305;
 			
@@ -870,18 +1129,73 @@ package
 				loaderOutPipeClr40.height = 8;
 			});
 			
-			loaderRegTank40.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank41.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank42.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank43.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank44.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank45.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegPipe42_1.x = 185;
+			loaderRegPipe42_1.y = 304;
 			
-			loaderRegPipe40.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe41.load(new URLRequest("../res/pipe_reg.png"))
-//			loaderRegPipe42.load(new URLRequest("../res/pipe_reg.png"))
-//			loaderRegPipe43.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe44.load(new URLRequest("../res/pipe_reg.png"))
+			loaderRegPipe42_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe42_1.width = 50;
+				loaderRegPipe42_1.height = 10;
+				loaderRegPipe42_1.rotation = 45;
+			});
+			
+			loaderRegPipe43_1.x = 230;
+			loaderRegPipe43_1.y = 304;
+			
+			loaderRegPipe43_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe43_1.width = 50;
+				loaderRegPipe43_1.height = 10;
+				loaderRegPipe43_1.rotation = -45;
+			});
+			
+			loaderRegPipe43_2.x = 235;
+			loaderRegPipe43_2.y = 304;
+			
+			loaderRegPipe43_2.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe43_2.width = 50;
+				loaderRegPipe43_2.height = 10;
+				loaderRegPipe43_2.rotation = 45;
+			});
+			
+			loaderRegPipe44_1.x = 285;
+			loaderRegPipe44_1.y = 304;
+			
+			loaderRegPipe44_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe44_1.width = 50;
+				loaderRegPipe44_1.height = 10;
+				loaderRegPipe44_1.rotation = 45;
+			});
+			
+			loaderRegTank40.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank41.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank42.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank43.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank44.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank45.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			
+			loaderRegPipe40.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe41.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe44.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe42_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe43_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe43_2.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe44_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank40.load(new URLRequest(regTankURL));
+			loaderRegTank41.load(new URLRequest(regTankURL));
+			loaderRegTank42.load(new URLRequest(regTankURL));
+			loaderRegTank43.load(new URLRequest(regTankURL));
+			loaderRegTank44.load(new URLRequest(regTankURL));
+			loaderRegTank45.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe40.load(new URLRequest(regPipeURL));
+			loaderRegPipe41.load(new URLRequest(regPipeURL));
+//			loaderRegPipe42.load(new URLRequest(regPipeURL));
+//			loaderRegPipe43.load(new URLRequest(regPipeURL));
+			loaderRegPipe44.load(new URLRequest(regPipeURL));
+			loaderRegPipe42_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe43_1.load(new URLRequest(regPipeURL));
+			loaderRegPipe43_2.load(new URLRequest(regPipeURL));
+			loaderRegPipe44_1.load(new URLRequest(regPipeURL));
 				
 			loaderOutPipeClr40.load(new URLRequest("../res/out_pipe_rst.png"))
 			
@@ -895,6 +1209,11 @@ package
 			addChild(loaderRegPipe40);
 			addChild(loaderRegPipe41);
 			addChild(loaderRegPipe44);
+			
+			addChild(loaderRegPipe42_1);
+			addChild(loaderRegPipe43_1);
+			addChild(loaderRegPipe43_2);
+			addChild(loaderRegPipe44_1);
 			
 			addChild(loaderOutPipeClr40);
 			
@@ -997,18 +1316,86 @@ package
 				loaderOutPipeClr50.height = 8;
 			});
 			
-			loaderRegTank50.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank51.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank52.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank53.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank54.load(new URLRequest("../res/reg_tank.png"));
-			loaderRegTank55.load(new URLRequest("../res/reg_tank.png"));
+			loaderRegPipe50_1.x = 80;
+			loaderRegPipe50_1.y = 336;
 			
-			loaderRegPipe50.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe51.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe52.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe53.load(new URLRequest("../res/pipe_reg.png"))
-			loaderRegPipe54.load(new URLRequest("../res/pipe_reg.png"))
+			loaderRegPipe50_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe50_1.width = 50;
+				loaderRegPipe50_1.height = 10;
+				loaderRegPipe50_1.rotation = -45;
+			});
+			
+			loaderRegPipe51_1.x = 130;
+			loaderRegPipe51_1.y = 336;
+			
+			loaderRegPipe51_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe51_1.width = 50;
+				loaderRegPipe51_1.height = 10;
+				loaderRegPipe51_1.rotation = -45;
+			});
+			
+			loaderRegPipe52_1.x = 180;
+			loaderRegPipe52_1.y = 336;
+			
+			loaderRegPipe52_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe52_1.width = 50;
+				loaderRegPipe52_1.height = 10;
+				loaderRegPipe52_1.rotation = -45;
+			});
+			
+			loaderRegPipe53_1.x = 230;
+			loaderRegPipe53_1.y = 336;
+			
+			loaderRegPipe53_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe53_1.width = 50;
+				loaderRegPipe53_1.height = 10;
+				loaderRegPipe53_1.rotation = -45;
+			});
+			
+			loaderRegPipe54_1.x = 280;
+			loaderRegPipe54_1.y = 336;
+			
+			loaderRegPipe54_1.contentLoaderInfo.addEventListener(Event.COMPLETE, function resizeImage(evt:Event):void {
+				loaderRegPipe54_1.width = 50;
+				loaderRegPipe54_1.height = 10;
+				loaderRegPipe54_1.rotation = -45;
+			});
+			
+			loaderRegTank50.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank51.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank52.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank53.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank54.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			loaderRegTank55.addEventListener(MouseEvent.CLICK, markTankAsCompleted);
+			
+			loaderRegPipe50.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe51.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe52.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe53.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe54.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe50_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe51_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe52_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe53_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			loaderRegPipe54_1.addEventListener(MouseEvent.CLICK, markPipeAsCompleted);
+			
+			loaderRegTank50.load(new URLRequest(regTankURL));
+			loaderRegTank51.load(new URLRequest(regTankURL));
+			loaderRegTank52.load(new URLRequest(regTankURL));
+			loaderRegTank53.load(new URLRequest(regTankURL));
+			loaderRegTank54.load(new URLRequest(regTankURL));
+			loaderRegTank55.load(new URLRequest(regTankURL));
+			
+			loaderRegPipe50.load(new URLRequest(regPipeURL));
+			loaderRegPipe51.load(new URLRequest(regPipeURL))
+			loaderRegPipe52.load(new URLRequest(regPipeURL))
+			loaderRegPipe53.load(new URLRequest(regPipeURL))
+			loaderRegPipe54.load(new URLRequest(regPipeURL))
+			loaderRegPipe50_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe51_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe52_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe53_1.load(new URLRequest(regPipeURL))
+			loaderRegPipe54_1.load(new URLRequest(regPipeURL))
 			
 			loaderOutPipeClr50.load(new URLRequest("../res/out_pipe_clr.png"))
 				
@@ -1025,11 +1412,52 @@ package
 			addChild(loaderRegPipe53);
 			addChild(loaderRegPipe54);
 			
+			addChild(loaderRegPipe50_1);
+			addChild(loaderRegPipe51_1);
+			addChild(loaderRegPipe52_1);
+			addChild(loaderRegPipe53_1);
+			addChild(loaderRegPipe54_1);
 			
 			addChild(loaderOutPipeClr50);
 		
 			/** row six end **/
 		}
+
+		private function markTankAsCompleted(event:MouseEvent):void {
+			
+			
+			
+			var loader:Loader = Loader(event.target);
+			
+			if(procssedTanks.indexOf(loader) == -1){
 		
+				loader.load(new URLRequest("../res/clr_tank.png"));
+				
+				totalPrice+=pricePerTank;
+				textSoFarSpentValue.text = "$"+totalPrice;
+				
+				procssedTanks.push(loader);
+				
+			}
+			
+			
+		}
+		
+		private function markPipeAsCompleted(event:MouseEvent):void {
+			//trace("clickHandler: " + event);
+			var loader:Loader = Loader(event.target);
+			
+			if(procssedPipes.indexOf(loader) == -1){
+		
+				loader.load(new URLRequest("../res/lv_pipe_clr.png"));
+				totalPrice+=pricePerPipe;
+				textSoFarSpentValue.text = "$"+totalPrice;
+				
+				procssedPipes.push(loader);
+			}
+			
+			
+				
+		}
 	}
 }
