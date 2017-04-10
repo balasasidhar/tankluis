@@ -5,12 +5,16 @@ package
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
+	import flash.ui.Keyboard;
 	
 	public class TankLuis extends Sprite
 	{
+		private var isShiftKeyDown:Boolean = false;
+		
 		private var regTankURL: String = "../res/reg_tank.png";
 		private var clrTankURL: String = "../res/clr_reg_tank.png";
 		
@@ -192,6 +196,9 @@ package
 		
 		public function init():void 
 		{ 
+			
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, checkKeyDown);	
+			stage.addEventListener(KeyboardEvent.KEY_UP, checkKeyUp);	
 			
 			var rectangleShape:Shape = new Shape();
 			rectangleShape.graphics.lineStyle(1);
@@ -1425,11 +1432,10 @@ package
 
 		private function markTankAsCompleted(event:MouseEvent):void {
 			
-			
-			
 			var loader:Loader = Loader(event.target);
 			
-			if(procssedTanks.indexOf(loader) == -1){
+			
+			if(procssedTanks.indexOf(loader) == -1 && !isShiftKeyDown){
 		
 				loader.load(new URLRequest("../res/clr_tank.png"));
 				
@@ -1438,12 +1444,25 @@ package
 				
 				procssedTanks.push(loader);
 				
+			}else if (procssedTanks.indexOf(loader) == -1 && isShiftKeyDown){
+				
+				var x:int = loader.x;
+				var y:int = loader.y;
+				
+				var circle:Shape = new Shape();
+				circle.graphics.clear();
+				circle.graphics.lineStyle(1,0x000000);
+//				circle.graphics.beginFill(0x990000);
+				circle.graphics.drawCircle(x + 10, y + 10, 15);
+				circle.graphics.endFill();
+				addChild(circle);
+				
 			}
-			
 			
 		}
 		
 		private function markPipeAsCompleted(event:MouseEvent):void {
+
 			//trace("clickHandler: " + event);
 			var loader:Loader = Loader(event.target);
 			
@@ -1458,6 +1477,20 @@ package
 			
 			
 				
+		}
+		
+		private function checkKeyDown(event:KeyboardEvent):void {
+			
+			if(event.keyCode == Keyboard.SHIFT){
+				isShiftKeyDown = true;
+			}
+			
+		}
+		
+		private function checkKeyUp(event:KeyboardEvent):void {
+			if(event.keyCode == Keyboard.SHIFT){
+				isShiftKeyDown = false;
+			}
 		}
 	}
 }
