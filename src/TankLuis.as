@@ -7,12 +7,20 @@ package
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
 	import flash.ui.Keyboard;
 	
 	public class TankLuis extends Sprite
 	{
+	
+		private var inFilename:String = "sampleInput.txt";
+		
+		public var outInfoArray:Array = new Array(); 
+		public var allInfoArray:Array = new Array(); 
+		public var probInfoArray:Array = new Array(); 
+		
 		private var isShiftKeyDown:Boolean = false;
 		
 		private var regTankURL: String = "../res/reg_tank.png";
@@ -191,7 +199,45 @@ package
 		
 		public function TankLuis()
 		{
+			
+			var inputFileLoader:URLLoader = new URLLoader();
+			inputFileLoader.addEventListener(Event.COMPLETE, onInputFileLoaded);
+			inputFileLoader.load(new URLRequest(inFilename));
+			
 			init();
+		}
+		
+		private function onInputFileLoaded(e:Event):void {
+			var inputArray:Array = e.target.data.split(/\n/);
+			var reg:RegExp = /(\ )+/;
+			var lineNum:int = 0;
+			while (lineNum < inputArray.length && inputArray[lineNum] != 888 ) {
+				allInfoArray[lineNum + 1] = (inputArray[lineNum].split(reg)).filter(isNumber, null);
+				++lineNum;
+			}
+			
+			allInfoArray[lineNum + 1] = [888];
+			
+			lineNum = 0;
+			while (allInfoArray[lineNum-1] != 999) {
+				probInfoArray[lineNum] = allInfoArray[lineNum]
+				++lineNum;
+			}
+			
+			trace(allInfoArray);
+		}
+		
+		//Small function that determines if input is a number or not
+		public function isNumber(str:String, index:int, array:Array):Boolean {  
+			var n:Number = parseInt(str);
+			if (isNaN(n)) { 
+				//trace("Not a Number!");
+				return false; 
+			}
+			else {
+				//trace("Found a Number!");
+				return true;
+			} 
 		}
 		
 		public function init():void 
